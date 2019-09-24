@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.parachut.thirtyfive";
+option java_outer_classname = "ThirtyFiveProto";
+
+package thirtyfive;
+
+enum ShipmentStatus {
+  ShipmentStatus_UNKNOWN = 0;
+  ShipmentStatus_PRETRANSIT = 1;
+  ShipmentStatus_INTRANSIT = 2;
+  ShipmentStatus_OUTFORDELIVERY = 3;
+  ShipmentStatus_DELIVERED = 4;
+  ShipmentStatus_AVAILABLEFORPICKUP = 5;
+  ShipmentStatus_RETURNTOSENDER = 6;
+  ShipmentStatus_FAILURE = 7;
+  ShipmentStatus_CANCELLED = 8;
+  ShipmentStatus_ERROR = 9;
+}
+
+enum ShipmentType {
+  ShipmentType_ACCESS = 0;
+  ShipmentType_EARN = 1;
+}
+
+enum ShipmentDirection {
+  ShipmentDirection_INBOUND = 0;
+  ShipmentDirection_OUTBOUND = 1;
+}
+
+enum InventoryCondition {
+  InventoryCondition_NEW = 0;
+  InventoryCondition_LIKENEW = 1;
+  InventoryCondition_EXCELLENT = 2;
+  InventoryCondition_USED = 3;
+  InventoryCondition_DAMAGED = 4;
+}
+
+enum InventoryStatus {
+  InventoryStatus_NEW = 0;
+  InventoryStatus_PENDING = 1;
+  InventoryStatus_ACCEPTED = 2;
+  InventoryStatus_ENROUTEWAREHOUSE = 3;
+  InventoryStatus_INSPECTING = 4;
+  InventoryStatus_INWAREHOUSE = 5;
+  InventoryStatus_SHIPMENTPREP = 6;
+  InventoryStatus_ENROUTEMEMBER = 7;
+  InventoryStatus_WITHMEMBER = 8;
+  InventoryStatus_RETURNING = 9;
+  InventoryStatus_OUTOFSERVICE = 10;
+  InventoryStatus_ENROUTEOWNER = 11;
+  InventoryStatus_RETURNED = 12;
+  InventoryStatus_STOLEN = 13;
+  InventoryStatus_LOST = 14;
+}
+
+message Shipment {
+  string id = 1;
+  google.protobuf.Timestamp est_delivery_date = 2;
+  int32 inventory_count = 3;
+  ShipmentStatus status = 4;
+  ShipmentDirection direction = 5;
+  ShipmentType type = 6;
+  Inventory inventory = 7;
+}
+
+message ShipmentNode {
+  string id = 1;
+  Shipment record = 3;
+}
+
+message Inventory {
+  string id = 1;
+  string bin = 2;
+  string serial = 3;
+  User user = 4;
+  InventoryStatus status = 5;
+  InventoryCondition condition = 6;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+}
+
+message Inspection {
+  string id = 1;
+  int32 functionality = 2;
+  int32 aethestic = 3;
+  string image = 4;
+  string notes = 5;
+  InventoryCondition condition = 6;
+  string inventoryId = 7;
+  string shipmentId = 8;
+  string tasks = 9;
+}
+
+service Shipments {
+  rpc GetShipments (GetShipmentsRequest) returns (GetShipmentsReply) {}
+  rpc GetShipment (GetShipmentRequest) returns (GetShipmentReply) {}
+}
+
+message GetShipmentsRequest {
+  string order = 1;
+  string column = 2;
+}
+
+message GetShipmentsReply {
+  repeated Shipment shipments = 1;
+}
+
+message GetShipmentRequest {
+  string id = 1;
+}
+
+message GetShipmentReply {
+  string id = 1;
+  Shipment shipment = 2;
+}
+
+service InspectionService {
+  rpc CreateInspection (CreateInspectionRequest) returns (Inspection) {}
+  rpc UpdateInspection (UpdateInspectionRequest) returns (Inspection) {}
+}
+
+message CreateInspectionRequest {
+  int32 functionality = 1;
+  int32 aethestic = 2;
+  string image = 3;
+  string notes = 4;
+  InventoryCondition condition = 5;
+  string inventoryId = 6;
+  string shipmentId = 7;
+  repeated string tasks = 8;
+}
+
+message UpdateInspectionRequest {
+  int32 functionality = 1;
+  int32 aethestic = 2;
+  string image = 3;
+  string notes = 4;
+  InventoryCondition condition = 5;
+  string inventoryId = 6;
+  string shipmentId = 7;
+  repeated string tasks = 8;
+}
+
+service InventoryService {
+  rpc CreateInspection (CreateInspectionRequest) returns (Inspection) {}
+  rpc UpdateInspection (UpdateInspectionRequest) returns (Inspection) {}
+}
