@@ -64,7 +64,7 @@ message Shipment {
   ShipmentStatus status = 4;
   ShipmentDirection direction = 5;
   ShipmentType type = 6;
-  Inventory inventory = 7;
+  repeated Inventory inventory = 7;
 }
 
 message ShipmentNode {
@@ -100,11 +100,6 @@ message Inspection {
   string tasks = 9;
 }
 
-service Shipments {
-  rpc GetShipments (GetShipmentsRequest) returns (GetShipmentsReply) {}
-  rpc GetShipment (GetShipmentRequest) returns (GetShipmentReply) {}
-}
-
 message GetShipmentsRequest {
   string order = 1;
   string column = 2;
@@ -121,11 +116,6 @@ message GetShipmentRequest {
 message GetShipmentReply {
   string id = 1;
   Shipment shipment = 2;
-}
-
-service InspectionService {
-  rpc CreateInspection (CreateInspectionRequest) returns (Inspection) {}
-  rpc UpdateInspection (UpdateInspectionRequest) returns (Inspection) {}
 }
 
 message CreateInspectionRequest {
@@ -150,7 +140,18 @@ message UpdateInspectionRequest {
   repeated string tasks = 8;
 }
 
-service InventoryService {
+message ReleaseInventoryRequest {
+  repeated string ids = 1;
+}
+
+message ReleaseInventoryReply {
+  repeated Inventory inventory = 1;
+}
+
+service ThirtyFive {
+  rpc GetShipments (GetShipmentsRequest) returns (GetShipmentsReply) {}
+  rpc GetShipment (GetShipmentRequest) returns (GetShipmentReply) {}
   rpc CreateInspection (CreateInspectionRequest) returns (Inspection) {}
   rpc UpdateInspection (UpdateInspectionRequest) returns (Inspection) {}
+  rpc ReleaseInventory (ReleaseInventoryRequest) returns (ReleaseInventoryReply) {}
 }
